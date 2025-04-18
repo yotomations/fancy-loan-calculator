@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fancy Loan Calculator - Tutorial</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --primary-dark: #3a5a84;
+            --primary-light: #5b80b6;
+            --secondary-color: #ff6b6b;
+            --secondary-dark: #e55b5b;
+            --secondary-light: #ff8a8a;
+            --accent-color: #ffd166;
+            --success-color: #06d6a0;
+            --warning-color: #ffbe0b;
+            --danger-color: #ef476f;
+            --background-color: #f8f9fa;
+            --card-color: #ffffff;
+            --text-color: #333333;
+            --text-light: #777777;
+            --text-dark: #222222;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --border-radius: 12px;
+            --border-radius-sm: 8px;
+            --border-radius-lg: 16px;
+            --font-primary: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-primary);
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .tutorial-container {
+            background-color: var(--card-color);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 900px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            transform: translateY(0);
+            opacity: 1;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tutorial-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tutorial-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+            pointer-events: none;
+        }
+
+        .tutorial-header h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+            letter-spacing: 0.5px;
+        }
+
+        .tutorial-header p {
+            font-size: 18px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        .tutorial-body {
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .tutorial-nav {
+            display: flex;
+            overflow-x: auto;
+            gap: 10px;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            scroll-behavior: smooth;
+        }
+
+        .tutorial-nav::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .tutorial-nav::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .tutorial-nav::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 10px;
+        }
+
+        .tutorial-nav button {
+            background: none;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            white-space: nowrap;
+            font-weight: 500;
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+
+        .tutorial-nav button.active {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .tutorial-nav button:hover:not(.active) {
+            background-color: rgba(74, 111, 165, 0.1);
+            color: var(--primary-color);
+        }
+
+        .tutorial-content {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .tutorial-section {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .tutorial-section.active {
+            display: block;
+        }
+
+        .tutorial-step {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            align-items: flex-start;
+        }
+
+        .step-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex-grow: 1;
+        }
+
+        .step-content h3 {
+            margin-bottom: 10px;
+            color: var(--primary-dark);
+            font-size: 20px;
+        }
+
+        .step-content p {
+            color: var(--text-color);
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .tutorial-image {
+            width: 100%;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-sm);
+            margin: 15px 0;
+            border: 1px solid rgba(0,0,0,0.1);
+            transition: var(--transition);
+        }
+
+        .tutorial-image:hover {
+            transform: scale(1.01);
+            box-shadow: var(--shadow);
+        }
+
+        .tip-box {
+            background-color: rgba(255, 209, 102, 0.15);
+            border-left: 4px solid var(--accent-color);
+            padding: 15px;
+            border-radius: var(--border-radius-sm);
+            margin: 15px 0;
+        }
+
+        .tip-box h4 {
+            color: #d4a30d;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tip-box h4 svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .warning-box {
+            background-color: rgba(239, 71, 111, 0.15);
+            border-left: 4px solid var(--danger-color);
+            padding: 15px;
+            border-radius: var(--border-radius-sm);
+            margin: 15px 0;
+        }
+
+        .warning-box h4 {
+            color: var(--danger-color);
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .warning-box h4 svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .nav-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 12px 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .nav-button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .nav-button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .nav-button svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background-color: rgba(0,0,0,0.1);
+            border-radius: 4px;
+            margin-top: 30px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--success-color);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: var(--border-radius);
+            margin: 20px 0;
+            box-shadow: var(--shadow);
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        @media (max-width: 768px) {
+            .tutorial-header h1 {
+                font-size: 28px;
+            }
+
+            .tutorial-header p {
+                font-size: 16px;
+            }
+
+            .tutorial-step {
+                flex-direction: column;
+            }
+
+            .step-number {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="tutorial-container">
+        <div class="tutorial-header">
+            <h1>Fancy Loan Calculator Tutorial</h1>
+            <p>Learn how to use all the features of your new Fancy Loan Calculator app with this comprehensive tutorial.</p>
+        </div>
+        <div class="tutorial-body">
+            <div class="tutorial-nav">
+                <button class="nav-tab active" data-target="getting-started">Getting Started</button>
+                <button class="nav-tab" data-target="basic-calculations">Basic Calculations</button>
+                <button class="nav-tab" data-target="advanced-features">Advanced Features</button>
+                <button class="nav-tab" data-target="saving-exporting">Saving & Exporting</button>
+                <button class="nav-tab" data-target="tips-tricks">Tips & Tricks</button>
+                <button class="nav-tab" data-target="troubleshooting">Troubleshooting</button>
+            </div>
+            
+            <div class="tutorial-content">
+                <!-- Getting Started Section -->
+                <div class="tutorial-section active" id="getting-started">
+                    <div class="tutorial-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>Welcome to Fancy Loan Calculator</h3>
+                            <p>Your new financial tool is designed to help you make better decisions about loans, mortgages, and other financial products. Let's start by understanding the main interface.</p>
+                            <img src="https://images.unsplash.com/photo-1591696205602-2f950c417cb9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Main Interface" class="tutorial-image">
+                            <p>The app is divided into several key areas:</p>
+                            <ul>
+                                <li><strong>Input Panel:</strong> Where you enter your loan details</li>
+                                <li><strong>Results Dashboard:</strong> Shows calculation results with visual charts</li>
+                                <li><strong>Action Bar:</strong> Contains buttons for saving, sharing, and more</li>
+                                <li><strong>Settings:</strong> Customize your calculator experience</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="tutorial-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>Setting Up Your Profile</h3>
+                            <p>Create a profile to save your calculations and personalize your experience.</p>
+                            <img src="https://images.unsplash.com/photo-1556155092-490a1ba16284?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Profile Setup" class="tutorial-image">
+                            <p>To set up your profile:</p>
+                            <ol>
+                                <li>Click on the profile icon in the top right corner</li>
+                                <li>Enter your personal information</li>
+                                <li>Set your preferred currency and other preferences</li>
+                                <li>Click "Save" to complete setup</li>
+                            </ol>
+                            <div class="tip-box">
+                                <h4>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"/>
+                                        <path d="M11 11h2v6h-2zm0-4h2v2h-2z"/>
+                                    </svg>
+                                    Pro Tip
+                                </h4>
+                                <p>Setting up a profile allows you to access your calculations from multiple devices and receive personalized financial insights.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Getting Started with Fancy Loan Calculator" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    
+                    <div class="navigation-buttons">
+                        <button class="nav-button prev-button" disabled>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                            </svg>
+                            Previous
+                        </button>
+                        <button class="nav-button next-button" data-target="basic-calculations">
+                            Next
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Basic Calculations Section -->
+                <div class="tutorial-section" id="basic-calculations">
+                    <div class="tutorial-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>Entering Loan Details</h3>
+                            <p>Start by entering the basic information about your loan or mortgage.</p>
+                            <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Loan Details Form" class="tutorial-image">
+                            <p>Required information includes:</p>
+                            <ul>
+                                <li><strong>Loan Amount:</strong> The principal amount you're borrowing</li>
+                                <li><strong>Interest Rate:</strong> Annual interest rate (APR)</li>
+                                <li><strong>Loan Term:</strong> Duration of the loan in months or years</li>
+                                <li><strong>Payment Frequency:</strong> Monthly, bi-weekly, or weekly payments</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="tutorial-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>Understanding Your Results</h3>
+                            <p>After entering your loan details, the calculator will instantly show your results.</p>
+                            <img src="https://images.unsplash.com/photo-1543286386-713bdd548da4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Calculation Results" class="tutorial-image">
+                            <p>The results dashboard includes:</p>
+                            <ul>
+                                <li><strong>Monthly Payment:</strong> Your regular payment amount</li>
+                                <li><strong>Total Interest:</strong> The total interest paid over the life of the loan</li>
+                                <li><strong>Total Cost:</strong> Principal plus interest</li>
+                                <li><strong>Amortization Schedule:</strong> Breakdown of each payment</li>
+                            </ul>
+                            <div class="warning-box">
+                                <h4>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                                        <path d="M13 7h-2v6h2V7zm0 8h-2v2h2v-2z"/>
+                                    </svg>
+                                    Important Note
+                                </h4>
+                                <p>Results are estimates based on the information provided. Actual loan terms may vary based on lender policies, credit score, and other factors.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tutorial-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3>Interactive Charts</h3>
+                            <p>Visual representations help you understand the breakdown of your loan.</p>
+                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Interactive Charts" class="tutorial-image">
+                            <p>Available charts include:</p>
+                            <ul>
+                                <li><strong>Principal vs. Interest:</strong> Pie chart showing the ratio</li>
+                                <li><strong>Amortization Graph:</strong> How principal and interest change over time</li>
+                                <li><strong>Payment Breakdown:</strong> What portion of each payment goes to principal and interest</li>
+                            </ul>
+                            <div class="tip-box">
+                                <h4>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"/>
+                                        <path d="M11 11h2v6h-2zm0-4h2v2h-2z"/>
+                                    </svg>
+                                    Pro Tip
+                                </h4>
+                                <p>You can click on any part of the charts to see detailed information about that specific portion of your loan.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="navigation-buttons">
+                        <button class="nav-button prev-button" data-target="getting-started">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                            </svg>
+                            Previous
+                        </button>
+                        <button class="nav-button next-button" data-target="advanced-features">
+                            Next
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Advanced Features Section -->
+                <div class="tutorial-section" id="advanced-features">
+                    <div class="tutorial-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>Comparing Multiple Loans</h3>
+                            <p>Compare different loan options side by side to find the best deal.</p>
+                            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Loan Comparison" class="tutorial-image">
+                            <p>To compare loans:</p>
+                            <ol>
+                                <li>Calculate your first loan scenario</li>
+                                <li>Click "Save for Comparison"</li>
+                                <li>Enter new loan details</li>
+                                <li>Click "Compare" to see both scenarios side by side</li>
+                            </ol>
+                            <p>You can compare up to 5 different loan scenarios simultaneously.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tutorial-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>Extra Payment Calculator</h3>
+                            <p>See how making extra payments can reduce your loan term and save on interest.</p>
+                            <img src="https://images.unsplash.com/photo-1579621970588-a35d0e7ab9b6?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Extra Payment Calculator" class="tutorial-image">
+                            <p>To use this feature:</p>
+                            <ol>
+                                <li>Calculate your basic loan first</li>
+                                <li>Click on "Extra Payment" tab</li>
+                                <li>Enter additional payment amount</li>
+                                <li>Select frequency (one-time, monthly, yearly)</li>
+                                <li>See updated results showing savings</li>
+                            </ol>
+                            <div class="tip-box">
+                                <h4>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"/>
+                                        <path d="M11 11h2v6h-2zm0-4h2v2h-2z"/>
+                                    </svg>
+                                    Pro Tip
+                                </h4>
+                                <p>Even small extra payments can make a significant difference over the life of a loan. Try different scenarios to find what works for your budget.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tutorial-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3>Refinancing Calculator</h3>
+                            <p>Determine if refinancing your existing loan makes financial sense.</p>
+                            <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Refinancing Calculator" class="tutorial-image">
+                            <p>To use the refinancing calculator:</p>
+                            <ol>
+                                <li>Enter your current loan details</li>
+                                <li>Click on "Refinance" tab</li>
+                                <li>Enter new loan terms and any refinancing costs</li>
+                                <li>Review the comparison showing potential savings or costs</li>
+                                <li>See break-even point for refinancing costs</li>
+                            </ol>
+                        </div>
+                    </div>
+                    
+                    <div class="navigation-buttons">
+                        <button class="nav-button prev-button" data-target="basic-calculations">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                            </svg>
+                            Previous
+                        </button>
+                        <button class="nav-button next-button" data-target="saving-exporting">
+                            Next
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Saving & Exporting Section -->
+                <div class="tutorial-section" id="saving-exporting">
+                    <div class="tutorial-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>Saving Your Calculations</h3>
+                            <p>Save your loan scenarios for future reference.</p>
+                            <img src="https://images.unsplash.com/photo-1568644396922-5c3bfae12521?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Saving Calculations" class="tutorial-image">
+                            <p>To save a calculation:</p>
+                            <ol>
+                                <li>Complete your loan calculation</li>
+                                <li>Click the "Save" button in the action bar</li>
+                                <li>Give your calculation a name</li>
+                                <li>Add optional notes or tags</li>
+                                <li>Click "Save" to store it in your profile</li>
+                            </ol>
+                            <p>You can access saved calculations from the "Saved" tab on the main screen.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tutorial-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>Exporting to PDF</h3>
+                            <p>Create professional-looking reports of your loan calculations.</p>
+                            <img src="https://images.unsplash.com/photo-1554475901-4538ddfbccc2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="PDF Export" class="tutorial-image">
+                            <p>To export a calculation:</p>
+                            <ol>
+                                <li>Complete your loan calculation</li>
+                                <li>Click the "Export" button in the action bar</li>
+                                <li>Select "PDF" as the format</li>
+                                <li>Choose which sections to include in the report</li>
+                                <li>Click "Generate PDF"</li>
+                            </ol>
+                            <div class="tip-box">
+                                <h4>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"/>
+                                        <path d="M11 11h2v6h-2zm0-4h2v2h-2z"/>
+                                    </svg>
+                                    Pro Tip
+                                </h4>
+                                <p>PDF reports are great for sharing with lenders, financial advisors, or family members when making important financial decisions.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tutorial-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3>Sharing Results</h3>
+                            <p>Share your calculations with others via email or social media.</p>
+                            <img src="https://images.unsplash.com/photo-1557568192-2fafc8b5ac66?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Sharing Options" class="tutorial-image">
+                            <p>To share your results:</p>
+                            <ol>
+                                <li>Complete your loan calculation</li>
+                                <li>Click the "Share" button in the action bar</li>
+                                <li>Choose your preferred sharing method</li>
+                                <li>Add an optional message</li>
+                                <li>Send or post your calculation</li>
+                            </ol>
+                            <p>Recipients will receive a link to view your calculation in a web browser, even if they don't have the app installed.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="navigation-buttons">
+                        <button class="nav-button prev-button" data-target="advanced-features">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                            </svg>
+                            Previous
+                        </button>
+                        <button class="nav-button next-button" data-target="tips-tricks">
+                            Next
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Tips & Tricks Section -->
+                <div class="tutorial-section" id="tips-tricks">
+                    <div class="tutorial-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>Keyboard Shortcuts</h3>
+                            <p>Speed up your calculations with these helpful keyboard shortcuts.</p>
+                            <div class="tip-box">
+                                <h4>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"/>
+                                        <path d="M11 11h2v6h-2zm0-4h2v2h-2z"/>
+                                    </svg>
+                                    Available Shortcuts
+                                </h4>
+                                <ul>
+                                    <li><strong>Ctrl+N (Cmd+N):</strong> New calculation</li>
+                                    <li><strong>Ctrl+S (Cmd+S):</strong> Save current calculation</li>
+                                    <li><strong>Ctrl+P (Cmd+P):</strong> Print or export to PDF</li>
+                                    <li><strong>Ctrl+C (Cmd+C):</strong> Copy results to clipboard</li>
+                                    <li><strong>Ctrl+Alt+C (Cmd+Option+C):</strong> Compare mode</li>
+                                    <li><strong>Tab / Shift+Tab:</strong> Navigate between input fields</li>
+                                    <li><strong>F1:</strong> Open help</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tutorial-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>Financial Insights</h3>
+                            <p>Get personalized insights to improve your loan situation.</p>
+                            <img src="https://images.unsplash.com/photo-1553729459-efe14ef6055d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Financial Insights" class="tutorial-image">
+                            <p>The app analyzes your loan details and provides tips such as:</p>
+                            <ul>
+                                <li>How much you could save by increasing your payment by 10%</li>
+                                <li>When refinancing might make sense based on current rates</li>
+                                <li>The impact of making bi-weekly instead of monthly payments</li>
+                                <li>How paying off high-interest debt first can save money</li>
+                            </ul>
+                            <p>To access insights, look for the lightbulb icon in your results dashboard.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tutorial-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3>Templates and Presets</h3>
+                            <p>Save time with templates for common loan scenarios.</p>
+                            <img src="https://images.unsplash.com/photo-1586892478025-2b5472316f22?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Templates and Presets" class="tutorial-image">
+                            <p>The app includes templates for:</p>
+                            <ul>
+                                <li>30-year fixed mortgage</li>
+                                <li>15-year fixed mortgage</li>
+                                <li>5-year auto loan</li>
+                                <li>Student loan refinancing</li>
+                                <li>Personal loan</li>
+                                <li>Home equity line of credit (HELOC)</li>
+                            </ul>
+                            <p>Access templates from the "Templates" button on the main screen.</p>
+                            <div class="tip-box">
+                                <h4>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"/>
+                                        <path d="M11 11h2v6h-2zm0-4h2v2h-2z"/>
+                                    </svg>
+                                    Pro Tip
+                                </h4>
+                                <p>You can create your own templates by saving a calculation and marking it as a template in the save dialog.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="navigation-buttons">
+                        <button class="nav-button prev-button" data-target="saving-exporting">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                            </svg>
+                            Previous
+                        </button>
+                        <button class="nav-button next-button" data-target="troubleshooting">
+                            Next
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Troubleshooting Section -->
+                <div class="tutorial-section" id="troubleshooting">
+                    <div class="tutorial-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>Common Issues and Solutions</h3>
+                            <p>Here are solutions to the most frequently encountered problems.</p>
+                            
+                            <h4>App Not Calculating Correctly</h4>
+                            <ul>
+                                <li>Make sure all input fields have valid values</li>
+                                <li>Check that you're using the correct interest rate format (e.g., 5.25 not 0.0525)</li>
+                                <li>Verify that your loan term is in the correct units (months or years)</li>
+                                <li>Try clearing all inputs and starting over</li>
+                            </ul>
+                            
+                            <h4>Unable to Save Calculations</h4>
+                            <ul>
+                                <li>Ensure you're signed in to your account</li>
+                                <li>Check your internet connection</li>
+                                <li>Try restarting the app</li>
+                                <li>Make sure you have sufficient storage space</li>
+                            </ul>
+                            
+                            <h4>Charts Not Displaying</h4>
+                            <ul>
+                                <li>Update to the latest version of the app</li>
+                                <li>Check if your device meets minimum requirements</li>
+                                <li>Try using a different browser if using the web version</li>
+                                <li>Clear the app cache in settings</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="tutorial-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>Contacting Support</h3>
+                            <p>If you're still experiencing issues, our support team is here to help.</p>
+                            <div class="tip-box">
+                                <h4>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"/>
+                                        <path d="M11 11h2v6h-2zm0-4h2v2h-2z"/>
+                                    </svg>
+                                    Support Options
+                                </h4>
+                                <ul>
+                                    <li><strong>Email:</strong> support@fancyloancalculator.com</li>
+                                    <li><strong>Live Chat:</strong> Available in-app from 9 AM to 6 PM EST</li>
+                                    <li><strong>Help Center:</strong> Visit our knowledge base at help.fancyloancalculator.com</li>
+                                    <li><strong>Community Forum:</strong> Connect with other users at community.fancyloancalculator.com</li>
+                                </ul>
+                            </div>
+                            <p>When contacting support, please include:</p>
+                            <ul>
+                                <li>Your device model and operating system</li>
+                                <li>App version (found in Settings > About)</li>
+                                <li>Detailed description of the issue</li>
+                                <li>Screenshots if applicable</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="tutorial-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3>Feedback and Feature Requests</h3>
+                            <p>We're constantly improving the app based on user feedback.</p>
+                            <img src="https://images.unsplash.com/photo-1512758017271-d7b84c2113f1?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Feedback Form" class="tutorial-image">
+                            <p>To submit feedback or request new features:</p>
+                            <ol>
+                                <li>Go to Settings > Feedback</li>
+                                <li>Select the feedback type (Bug Report, Feature Request, General Feedback)</li>
+                                <li>Provide detailed information</li>
+                                <li>Submit your feedback</li>
+                            </ol>
+                            <p>We review all submissions and prioritize development based on user demand.</p>
+                            <div class="tip-box">
+                                <h4>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"/>
+                                        <path d="M11 11h2v6h-2zm0-4h2v2h-2z"/>
+                                    </svg>
+                                    Pro Tip
+                                </h4>
+                                <p>Join our beta testing program to get early access to new features and help shape the future of the app. Sign up in Settings > Beta Program.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="navigation-buttons">
+                        <button class="nav-button prev-button" data-target="tips-tricks">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                            </svg>
+                            Previous
+                        </button>
+                        <button class="nav-button next-button" data-target="getting-started">
+                            Back to Start
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14v-4h2v4h3l-4 4-4-4h3zm6-8l-4-4-4 4h3v4h2V8h3z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" style="width: 16.67%;"></div>
+            </div>
+            
+            <div class="footer">
+                <p>© 2023 Fancy Loan Calculator. All rights reserved.</p>
+                <p>Version 1.0.0 | <a href="#" style="color: var(--primary-color);">Privacy Policy</a> | <a href="#" style="color: var(--primary-color);">Terms of Service</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab navigation
+            const navTabs = document.querySelectorAll('.nav-tab');
+            const sections = document.querySelectorAll('.tutorial-section');
+            const progressBar = document.querySelector('.progress-bar');
+            
+            function setActiveTab(targetId) {
+                // Update tabs
+                navTabs.forEach(tab => {
+                    if (tab.dataset.target === targetId) {
+                        tab.classList.add('active');
+                    } else {
+                        tab.classList.remove('active');
+                    }
+                });
+                
+                // Update sections
+                sections.forEach(section => {
+                    if (section.id === targetId) {
+                        section.classList.add('active');
+                    } else {
+                        section.classList.remove('active');
+                    }
+                });
+                
+                // Update progress bar
+                const tabIndex = Array.from(navTabs).findIndex(tab => tab.dataset.target === targetId);
+                const progressPercentage = ((tabIndex + 1) / navTabs.length) * 100;
+                progressBar.style.width = `${progressPercentage}%`;
+                
+                // Scroll to top of the section
+                document.querySelector('.tutorial-body').scrollTop = 0;
+            }
+            
+            // Add click event to tabs
+            navTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const targetId = tab.dataset.target;
+                    setActiveTab(targetId);
+                });
+            });
+            
+            // Navigation buttons
+            const nextButtons = document.querySelectorAll('.next-button');
+            const prevButtons = document.querySelectorAll('.prev-button');
+            
+            nextButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetId = button.dataset.target;
+                    setActiveTab(targetId);
+                });
+            });
+            
+            prevButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetId = button.dataset.target;
+                    setActiveTab(targetId);
+                });
+            });
+            
+            // Create confetti animation for visual interest
+            function createConfetti(count) {
+                for (let i = 0; i < count; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    
+                    // Random position, color and size
+                    const left = Math.random() * 100;
+                    const size = Math.random() * 8 + 4;
+                    const colorIndex = Math.floor(Math.random() * 4);
+                    const colors = ['#4a6fa5', '#ff6b6b', '#ffd166', '#06d6a0'];
+                    
+                    confetti.style.left = `${left}vw`;
+                    confetti.style.width = `${size}px`;
+                    confetti.style.height = `${size}px`;
+                    confetti.style.backgroundColor = colors[colorIndex];
+                    confetti.style.animationDelay = `${Math.random() * 3}s`;
+                    
+                    document.body.appendChild(confetti);
+                    
+                    // Remove after animation completes
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 5000);
+                }
+            }
+            
+            // Create confetti when page loads
+            createConfetti(20);
+            
+            // Add a small confetti burst when changing tabs
+            navTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    createConfetti(5);
+                });
+            });
+            
+            // Animate features to appear one by one
+            const animateSteps = () => {
+                const steps = document.querySelectorAll('.active .tutorial-step');
+                steps.forEach((step, index) => {
+                    setTimeout(() => {
+                        step.style.opacity = '0';
+                        step.style.transform = 'translateY(20px)';
+                        setTimeout(() => {
+                            step.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                            step.style.opacity = '1';
+                            step.style.transform = 'translateY(0)';
+                        }, 50);
+                    }, index * 150);
+                });
+            };
+            
+            // Animate steps when changing tabs
+            navTabs.forEach(tab => {
+                tab.addEventListener('click', animateSteps);
+            });
+            
+            // Initial animation
+            setTimeout(animateSteps, 500);
+        });
+    </script>
+</body>
+</html>
